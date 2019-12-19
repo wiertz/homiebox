@@ -9,7 +9,7 @@ const log = require('./log')
 const settings = require('./settings.json')
 
 // Read pairs of directories and nfc ids.
-const nfcPlayback = require('./nfc-playback.json')
+const nfcLibrary = require(settings.nfcLibrary)
 
 // Throws event if new nfc card is read.
 // Event name: 'nfcRead', returned data: nfc id.
@@ -56,10 +56,10 @@ nfcEvents.on('nfcRead', async nfcKey => {
 
     // If the nfc id is not the one currently playing AND has a matching music folder,
     // play the folder linked to this nfc id
-    if (nfcKey != state.activeNfc && nfcPlayback[nfcKey]) {
+    if (nfcKey != state.activeNfc && nfcLibrary[nfcKey]) {
 
         // Create folder uri in modidy format
-        const playDirectory = 'local:directory:' + encodeURI(nfcPlayback[nfcKey])
+        const playDirectory = 'local:directory:' + encodeURI(nfcLibrary[nfcKey])
         log('debug', playDirectory)
 
         // Get uris for all tracks in the folder
