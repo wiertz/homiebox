@@ -6,4 +6,5 @@ const logMessage = function(type, message) {
     }
 }
 
+
 module.exports = logMessage
