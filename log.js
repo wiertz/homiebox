@@ -1,4 +1,4 @@
-const logSettings = require(settings).log
+const logSettings = require('settings').log
 
 const logMessage = function(type, message) {
     if(logSettings.includes(type)) {
