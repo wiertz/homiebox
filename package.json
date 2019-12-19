@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/wiertz/homiebox#readme",
   "dependencies": {
-    "mopidy": "^1.0.1"
+    "mopidy": "^1.0.1",
+    "node-hid": "^1.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.1"
