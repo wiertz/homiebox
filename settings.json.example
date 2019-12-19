@@ -1,0 +1,15 @@
+{
+    "mopidyWebSocketUrl": "ws://127.0.0.1:6680/mopidy/ws/",
+    "nfcHidPath": "/dev/hidraw0",
+    "maxVolume": 100,
+    "minVolume": 0,
+    "volumeSteps": 10,
+    "gpio": {
+        "17": "previousTrack",
+        "9": "nextTrack",
+        "10": "playPause",
+        "22": "volumeUp",
+        "27": "volumeDown"
+    },
+    "log": ["debug", "info", "error"]
+}
