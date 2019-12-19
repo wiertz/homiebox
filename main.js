@@ -18,7 +18,7 @@ const nfcEvents = require('./nfc-events')
 
 // Throws events on GPIO button press.
 // Events: 'playPause', 'nextTrack', 'previousTrack', 'volumeUp', 'volumeDown'
-const gpioEvents = require('../gpio-events')
+const gpioEvents = require('./gpio-events')
 
 // Connect to mopidy server
 const mopidy = new Mopidy({
