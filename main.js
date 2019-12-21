@@ -30,8 +30,8 @@ const mopidy = new Mopidy({
 // 'state.ready' tells whether connection to mopidy is ready.
 // 'state.activeNfc' contains the last nfc id that was played.
 let state = {}
-state.ready = false
 state.activeNfc = ''
+state.volume = null
 
 // Listen to mopidy events, set homiebox state accordingly, 
 // and log events to console (info/debugging)
@@ -111,24 +111,26 @@ gpioEvents.on('previousTrack', () => {
 gpioEvents.on('volumeDown', async () => {
     try {
         log('debug', 'volumeDown pushed')
-        const currentVolume = await mopidy.mixer.getVolume({})
+        const currentVolume = state.volume || await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume - settings.volumeSteps
         const newVolume = targetVolume < settings.minVolume ? settings.minVolume : targetVolume
         log('debug', 'Setting to ', newVolume)
         mopidy.mixer.setVolume({ volume: newVolume })
+        state.volume = newVolume
     } catch(err) {
-        log('error', 'could not set volume')
+        log('error', 'Could not set volume')
     }
 })
 
 gpioEvents.on('volumeUp', async () => {
     try {
         log('volumeUp pushed')
-        const currentVolume = await mopidy.mixer.getVolume({})
+        const currentVolume = state.volume || await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume + settings.volumeSteps
         const newVolume = targetVolume > settings.maxVolume ? maxVolume : targetVolume
         log('Setting to ', newVolume)
         mopidy.mixer.setVolume({ volume: newVolume })
+        state.volume = newVolume
     } catch(err) {
         log('error', 'Could not set volume')
     }
