@@ -38,10 +38,11 @@ state.volume = null
 mopidy.on('state:online', async () => {
     // Refresh library once on startup
     mopidy.library.refresh({ "uri": null })
-    mopidy.mixer.setVolume({ volume: 10 })
+    await mopidy.mixer.setVolume({ volume: 5 })
     // Log list of current directories (info/debugging)
     const dirs = await mopidy.library.browse({ uri: 'local:directory' })
     log('debug', dirs)
+    log('debug', 'Volume: ' + await mopidy.mixer.getVolume())
 })
 
 
