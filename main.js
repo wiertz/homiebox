@@ -111,7 +111,7 @@ gpioEvents.on('volumeDown', async () => {
         const currentVolume = state.volume || await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume - settings.volumeSteps
         const newVolume = targetVolume < settings.minVolume ? settings.minVolume : targetVolume
-        log('debug', 'Setting to ', newVolume)
+        log('debug', 'Setting to ' + newVolume)
         mopidy.mixer.setVolume({ volume: newVolume })
         state.volume = newVolume
     } catch(err) {
@@ -125,7 +125,7 @@ gpioEvents.on('volumeUp', async () => {
         const currentVolume = state.volume || await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume + settings.volumeSteps
         const newVolume = targetVolume > settings.maxVolume ? maxVolume : targetVolume
-        log('Setting to ', newVolume)
+        log('debug', 'Setting to ' + newVolume)
         mopidy.mixer.setVolume({ volume: newVolume })
         state.volume = newVolume
     } catch(err) {
