@@ -2,7 +2,7 @@
 A music player controlled by nfc/rfid, e.g. for building a music box for children
 
 ## Motivation
-My motivation was to create a music box for children that runs on a raspberry pi, uses nfc cards to start albums and gpio buttons to control playback. It is inspired by commercial projects such as toniebox and by open source projects such as phoniebox. It differs from commercial solutions by being free and open source, and from other open source projects by maintaining a simple code structure fully based on nodejs.
+My motivation was to create a music box for children that runs on a raspberry pi, uses nfc cards to start albums and gpio buttons to control playback. It is inspired by commercial projects such as toniebox and by open source projects such as [phoniebox](http://phoniebox.de)/[RPi-Jukebox-RFID](https://github.com/MiczFlor/RPi-Jukebox-RFID). It differs from commercial solutions by being free and open source, and from the mentioned open source projects by maintaining a simple code structure fully based on nodejs.
 
 ## Architecture
 Homiebox functions as a client to the python based music player deamon 'mopidy'. By default it assumes that mopidy is running on the same machine. It allows to control playback by an rfid/nfc reader and gpio buttons. On reading an rfid/nfc key, it plays tracks contained in a local folder. The codebase is structured as follows:
@@ -14,5 +14,5 @@ Homiebox functions as a client to the python based music player deamon 'mopidy'.
 
 ## Customization
 * I have only tested homiebox with a neufftech rfid usb reader. It should be relatively easy to adapt this to other readers by modifying nfc-events.js.
-* Currently, homiebox matches an rfid/nfc to a local folder and plays all files in that folder. Adding support for Spotify, Youtube or other services is not a big step given corresponding add-ins for mopidy exist.
+* Currently, homiebox matches an rfid/nfc to a local folder and plays all files in that folder. Adding support for Spotify, Youtube or other services is not a big step given that corresponding add-ins for mopidy exist.
 * A web service for uploading music and organizing the nfc/rfid library is planned.
