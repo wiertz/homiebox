@@ -4,6 +4,7 @@
     "nfcLibrary": "./nfc-library.json",
     "maxVolume": 100,
     "minVolume": 0,
+    "startupVolume": 100,
     "volumeSteps": 10,
     "gpio": {
         "17": "previousTrack",
