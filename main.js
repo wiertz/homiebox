@@ -20,6 +20,7 @@ const nfcEvents = require('./nfc-events')
 // Events: 'playPause', 'nextTrack', 'previousTrack', 'volumeUp', 'volumeDown'
 const gpioEvents = require('./gpio-events')
 
+
 // Connect to mopidy server
 const mopidy = new Mopidy({
     webSocketUrl: settings.mopidyWebSocketUrl,
@@ -31,7 +32,7 @@ const mopidy = new Mopidy({
 // 'state.activeNfc' contains the last nfc id that was played.
 let state = {}
 state.activeNfc = ''
-state.volume = null
+state.lockVolume = false
 
 // Listen to mopidy events, set homiebox state accordingly, 
 // and log events to console (info/debugging)
@@ -108,27 +109,37 @@ gpioEvents.on('previousTrack', () => {
 gpioEvents.on('volumeDown', async () => {
     try {
         log('debug', 'volumeDown pushed')
-        const currentVolume = state.volume || await mopidy.mixer.getVolume({})
+        if(state.lockVolume) {
+            return
+        }
+        state.lockVolume = true
+        const currentVolume = await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume - settings.volumeSteps
         const newVolume = targetVolume < settings.minVolume ? settings.minVolume : targetVolume
         log('debug', 'Setting to ' + newVolume)
         mopidy.mixer.setVolume({ volume: newVolume })
-        state.volume = newVolume
+        state.lockVolume = false
     } catch(err) {
         log('error', 'Could not set volume')
+        state.lockVolume = false
     }
 })
 
 gpioEvents.on('volumeUp', async () => {
     try {
         log('volumeUp pushed')
-        const currentVolume = state.volume || await mopidy.mixer.getVolume({})
+        if(state.lockVolume) {
+            return
+        }
+        state.lockVolume = true
+        const currentVolume = await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume + settings.volumeSteps
         const newVolume = targetVolume > settings.maxVolume ? maxVolume : targetVolume
         log('debug', 'Setting to ' + newVolume)
         mopidy.mixer.setVolume({ volume: newVolume })
-        state.volume = newVolume
+        state.lockVolume = false
     } catch(err) {
         log('error', 'Could not set volume')
+        state.lockVolume = false
     }
 })
