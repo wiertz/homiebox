@@ -32,7 +32,6 @@ const mopidy = new Mopidy({
 // 'state.activeNfc' contains the last nfc id that was played.
 let state = {}
 state.activeNfc = ''
-state.lockVolume = false
 
 // Listen to mopidy events, set homiebox state accordingly, 
 // and log events to console (info/debugging)
