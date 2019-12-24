@@ -109,37 +109,26 @@ gpioEvents.on('previousTrack', () => {
 gpioEvents.on('volumeDown', async () => {
     try {
         log('debug', 'volumeDown pushed')
-        if(state.lockVolume) {
-            return
-        }
-        state.lockVolume = true
         const currentVolume = await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume - settings.volumeSteps
         const newVolume = targetVolume < settings.minVolume ? settings.minVolume : targetVolume
         log('debug', 'Setting to ' + newVolume)
-        await mopidy.mixer.setVolume({ volume: newVolume })
-        state.lockVolume = false
+        mopidy.mixer.setVolume({ volume: newVolume })
     } catch(err) {
         log('error', 'Could not set volume')
-        state.lockVolume = false
     }
 })
 
 gpioEvents.on('volumeUp', async () => {
     try {
         log('volumeUp pushed')
-        if(state.lockVolume) {
-            return
-        }
         state.lockVolume = true
         const currentVolume = await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume + settings.volumeSteps
         const newVolume = targetVolume > settings.maxVolume ? maxVolume : targetVolume
         log('debug', 'Setting to ' + newVolume)
-        await mopidy.mixer.setVolume({ volume: newVolume })
-        state.lockVolume = false
+        mopidy.mixer.setVolume({ volume: newVolume })
     } catch(err) {
         log('error', 'Could not set volume')
-        state.lockVolume = false
     }
 })
