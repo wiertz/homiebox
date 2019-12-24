@@ -117,7 +117,7 @@ gpioEvents.on('volumeDown', async () => {
         const targetVolume = currentVolume - settings.volumeSteps
         const newVolume = targetVolume < settings.minVolume ? settings.minVolume : targetVolume
         log('debug', 'Setting to ' + newVolume)
-        mopidy.mixer.setVolume({ volume: newVolume })
+        await mopidy.mixer.setVolume({ volume: newVolume })
         state.lockVolume = false
     } catch(err) {
         log('error', 'Could not set volume')
@@ -136,7 +136,7 @@ gpioEvents.on('volumeUp', async () => {
         const targetVolume = currentVolume + settings.volumeSteps
         const newVolume = targetVolume > settings.maxVolume ? maxVolume : targetVolume
         log('debug', 'Setting to ' + newVolume)
-        mopidy.mixer.setVolume({ volume: newVolume })
+        await mopidy.mixer.setVolume({ volume: newVolume })
         state.lockVolume = false
     } catch(err) {
         log('error', 'Could not set volume')
