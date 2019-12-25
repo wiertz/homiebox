@@ -53,7 +53,7 @@ nfcEvents.on('nfcRead', async nfcKey => {
 
     // If the nfc id is not the one currently playing AND has a matching music folder,
     // play the folder linked to this nfc id
-    if (nfcKey != state.activeNfc && nfcLibrary[nfcKey]) {
+    if ((nfcKey != state.activeNfc) && nfcLibrary[nfcKey]) {
 
         // Create folder uri in modidy format
         const playDirectory = 'local:directory:' + encodeURI(nfcLibrary[nfcKey])
@@ -75,6 +75,7 @@ nfcEvents.on('nfcRead', async nfcKey => {
         state.activeNfc = nfcKey
         return
     }
+    if (nfcKey)
 })
 
 
@@ -120,7 +121,7 @@ gpioEvents.on('volumeDown', async () => {
 
 gpioEvents.on('volumeUp', async () => {
     try {
-        log('volumeUp pushed')
+        log('debug', 'volumeUp pushed')
         state.lockVolume = true
         const currentVolume = await mopidy.mixer.getVolume({})
         const targetVolume = currentVolume + settings.volumeSteps
