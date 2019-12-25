@@ -1,3 +1,4 @@
+const fs = require('fs')
 const Mopidy = require('mopidy')
 
 
@@ -108,12 +109,8 @@ gpioEvents.on('previousTrack', () => {
 gpioEvents.on('volumeDown', async () => {
     try {
         log('debug', 'volumeDown pushed')
-        const currentVolume = await mopidy.mixer.getVolume({})
-        const targetVolume = currentVolume - settings.volumeSteps
-        const newVolume = targetVolume < settings.minVolume ? settings.minVolume : targetVolume
-        log('debug', 'Setting to ' + newVolume)
-        mopidy.mixer.setVolume({ volume: newVolume })
-    } catch(err) {
+        _changeVolume('down')
+    } catch (err) {
         log('error', 'Could not set volume')
     }
 })
@@ -121,13 +118,24 @@ gpioEvents.on('volumeDown', async () => {
 gpioEvents.on('volumeUp', async () => {
     try {
         log('debug', 'volumeUp pushed')
-        state.lockVolume = true
-        const currentVolume = await mopidy.mixer.getVolume({})
-        const targetVolume = currentVolume + settings.volumeSteps
-        const newVolume = targetVolume > settings.maxVolume ? maxVolume : targetVolume
-        log('debug', 'Setting to ' + newVolume)
-        mopidy.mixer.setVolume({ volume: newVolume })
-    } catch(err) {
+        _changeVolume('up')
+    } catch (err) {
         log('error', 'Could not set volume')
     }
 })
+
+const _changeVolume = async (direction) => {
+    try {
+        const currentVolume = await mopidy.mixer.getVolume({})
+        const targetVolume
+        if (direction === 'up') {
+            targetVolume = Math.min(currentVolume + settings.volumeSteps, settings.maxVolume)
+        } else if(direction === 'down') {
+            targetVolume = Math.max(currentVolume - settings.volumeSteps, settings.maxVolume)
+        }
+        log('debug', 'Setting to ' + targetVolume)
+        mopidy.mixer.setVolume({ volume: targetVolume })
+    } catch (err) {
+        throw err
+    }
+}
