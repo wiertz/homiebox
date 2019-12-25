@@ -75,7 +75,6 @@ nfcEvents.on('nfcRead', async nfcKey => {
         state.activeNfc = nfcKey
         return
     }
-    if (nfcKey)
 })
 
 
