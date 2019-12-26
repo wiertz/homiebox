@@ -1,4 +1,4 @@
-const state = require('app-state')
+const state = require('./app-state')
 const log = require('./log')
 
 module.exports = {

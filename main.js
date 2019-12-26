@@ -11,7 +11,7 @@ const settings = require('./settings.json')
 
 // Read pairs of directories and nfc ids.
 const nfcLibrary = require(settings.nfcLibrary)
-const nfcFunctions = require('nfc-functions')
+const nfcFunctions = require('./nfc-functions')
 
 // Throws event if new nfc card is read.
 // Event name: 'nfcRead', returned data: nfc id.
@@ -32,7 +32,7 @@ const mopidy = new Mopidy({
 // Import state of homiebox.
 // 'state.activeNfc' contains the last nfc id that was played.
 // 'state.lock' disables buttons and nfc cards
-const state = require('app-state.js')
+const state = require('./app-state.js')
 
 // Listen to mopidy events, set homiebox state accordingly, 
 // and log events to console (info/debugging)
