@@ -137,7 +137,7 @@ const _changeVolume = async (direction) => {
     try {
         log('debug', direction + ' volume pushed.')
         const currentVolume = await mopidy.mixer.getVolume({})
-        const targetVolume
+        let targetVolume 
         if (direction === 'increase') {
             targetVolume = Math.min(currentVolume + settings.volumeSteps, settings.maxVolume)
         } else {
