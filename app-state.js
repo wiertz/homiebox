@@ -1,6 +1,6 @@
 const state = {
-    activeNfc = '',
-    lock = false
+    activeNfc: null,
+    lock: false
 }
 
 module.exports = state
