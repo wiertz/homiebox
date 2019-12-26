@@ -148,6 +148,10 @@ _changeVolume = async function (direction) {
     }
 }
 
-gpioEvents.on('volumeDown', _changeVolume('decrease'))
+gpioEvents.on('volumeDown', () => {
+    _changeVolume('decrease')
+})
 
-gpioEvents.on('volumeUp', _changeVolume('increase'))
+gpioEvents.on('volumeUp', () => {
+    _changeVolume('increase')
+})
