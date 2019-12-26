@@ -1,5 +1,5 @@
 const state = {
-    activeNfc = null,
+    activeNfc = '',
     lock = false
 }
 
