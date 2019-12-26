@@ -126,9 +126,6 @@ gpioEvents.on('previousTrack', () => {
     mopidy.playback.previous()
 })
 
-gpioEvents.on('volumeDown', _changeVolume('decrease'))
-
-gpioEvents.on('volumeUp', _changeVolume('increase'))
 
 const _changeVolume = async (direction) => {
     if(state.lock) {
@@ -150,3 +147,7 @@ const _changeVolume = async (direction) => {
         return
     }
 }
+
+gpioEvents.on('volumeDown', _changeVolume('decrease'))
+
+gpioEvents.on('volumeUp', _changeVolume('increase'))
