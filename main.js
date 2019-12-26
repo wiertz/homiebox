@@ -127,7 +127,7 @@ gpioEvents.on('previousTrack', () => {
 })
 
 
-const _changeVolume = async (direction) => {
+_changeVolume = async function (direction) {
     if(state.lock) {
         return
     }
