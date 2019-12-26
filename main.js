@@ -50,9 +50,7 @@ mopidy.on('state:online', async () => {
 //// REACT ON NFC CARD HAVING BEEN READ
 
 nfcEvents.on('nfcRead', async nfcKey => {
-    if(state.lock) {
-        return
-    }
+
     log('info', 'NFC key:' + nfcKey)
 
     // If the nfc id has a matching function,
@@ -60,6 +58,10 @@ nfcEvents.on('nfcRead', async nfcKey => {
     if (nfcFunctions[nfcKey]) {
         log('debug', 'Executing function linked to key')
         nfcFunctions[nfcKey]()
+        return
+    }
+    
+    if(state.lock) {
         return
     }
 
