@@ -57,9 +57,9 @@ nfcEvents.on('nfcRead', async nfcKey => {
 
     // If the nfc id has a matching function,
     // call execute this function
-    if (nfcFunction[nfcKey]) {
+    if (nfcFunctions[nfcKey]) {
         log('debug', 'Executing function linked to key')
-        nfcFunction[nfcKey]()
+        nfcFunctions[nfcKey]()
         return
     }
 
