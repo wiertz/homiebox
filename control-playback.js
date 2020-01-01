@@ -30,10 +30,6 @@ exports.playDirectory = async (path) => {
     await mopidy.tracklist.clear({})
     await mopidy.tracklist.add({ uris: tracksUri })
     await mopidy.playback.play()
-
-    // Set activeNfc to current value
-    state.activeNfc = nfcKey
-    return
 }
 
 exports.playPause = async () => {
