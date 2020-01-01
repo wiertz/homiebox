@@ -1,159 +1,55 @@
-const fs = require('fs')
-const Mopidy = require('mopidy')
 
-
-//// DO THINGS AT STARTUP
-
-// Read logging utility function.
+// Load global app state and log function
+const state = require('./app-state.js')
 const log = require('./log')
 
+// Load settings
 const settings = require('./settings.json')
+const nfcMusic = require(settings.nfcMusicLibrary)
+const nfcFunctions = require('./nfc-function-library')
 
-// Read pairs of directories and nfc ids.
-const nfcLibrary = require(settings.nfcLibrary)
-const nfcFunctions = require('./nfc-functions')
-
-// Throws event if new nfc card is read.
-// Event name: 'nfcRead', returned data: nfc id.
-// (Adapt or replace 'nfc-events.js' to make homiebox work with your reader)
+// Load control functions
 const nfcEvents = require('./nfc-events')
-
-// Throws events on GPIO button press.
-// Events: 'playPause', 'nextTrack', 'previousTrack', 'volumeUp', 'volumeDown'
 const gpioEvents = require('./gpio-events')
+const playback = require('./control-playback')
 
 
-// Connect to mopidy server
-const mopidy = new Mopidy({
-    webSocketUrl: settings.mopidyWebSocketUrl,
-    callingConvention: "by-position-or-by-name"
-})
-
-// Import state of homiebox.
-// 'state.activeNfc' contains the last nfc id that was played.
-// 'state.lock' disables buttons and nfc cards
-const state = require('./app-state.js')
-
-// Listen to mopidy events, set homiebox state accordingly, 
-// and log events to console (info/debugging)
-mopidy.on('state:online', async () => {
-    // Refresh library once on startup
-    mopidy.library.refresh({ "uri": null })
-    state.volume = settings.startupVolume || 10
-    mopidy.mixer.setVolume({ volume: state.volume })
-    // Log list of current directories (info/debugging)
-    const dirs = await mopidy.library.browse({ uri: 'local:directory' })
-    log('debug', dirs)
-})
-
-
-//// REACT ON NFC CARD HAVING BEEN READ
-
+// React on nfc input
 nfcEvents.on('nfcRead', async nfcKey => {
 
     log('info', 'NFC key:' + nfcKey)
 
-    // If the nfc id has a matching function,
-    // call execute this function
+    // If nfc key is assigned to a function, execute the function
     if (nfcFunctions[nfcKey]) {
         log('debug', 'Executing function linked to key')
         nfcFunctions[nfcKey]()
         return
     }
-    
-    if(state.lock) {
-        return
-    }
 
-    // If the nfc id has a matching music folder,
-    // play the folder linked to this nfc id
-    if (nfcLibrary[nfcKey]) {
-
-        // Create folder uri in modidy format
-        const playDirectory = 'local:directory:' + encodeURI(nfcLibrary[nfcKey])
-        log('debug', playDirectory)
-
-        // Get uris for all tracks in the folder
-        const tracks = await mopidy.library.browse({ uri: playDirectory })
-        const tracksUri = tracks.map(track => {
-            return track.uri
-        })
-        log('debug', tracksUri)
-
-        // Clear tracklist, replace with folder tracks, start playback
-        await mopidy.tracklist.clear({})
-        await mopidy.tracklist.add({ uris: tracksUri })
-        await mopidy.playback.play()
-
-        // Set activeNfc to current value
+    // If nfc key is assigned to music, play music
+    if (nfcMusic[nfcKey]) {
+        playback.playDirectory(nfcMusic[nfcKey])
         state.activeNfc = nfcKey
         return
     }
 })
 
 
-
-//// REACT ON GPIO BUTTON EVENTS
-
-gpioEvents.on('playPause', async () => {
-    if(state.lock) {
-        return
-    }
-    log('debug', 'playPause pushed')
-    const mpdState = await mopidy.playback.getState()
-    if (mpdState === 'playing') {
-        mopidy.playback.pause()
-        return
-    }
-    if (mpdState === 'paused') {
-        mopidy.playback.resume()
-        return
-    }
-    mopidy.playback.play()
-})
-
-gpioEvents.on('nextTrack', () => {
-    if(state.lock) {
-        return
-    }
-    log('debug', 'nextTrack pushed')
-    mopidy.playback.next()
-})
-
-gpioEvents.on('previousTrack', () => {
-    if(state.lock) {
-        return
-    }
-    log('debug', 'previousTrack pushed')
-    mopidy.playback.previous()
-})
-
-
-_changeVolume = async function (direction) {
-    if(state.lock) {
-        return
-    }
-    try {
-        log('debug', direction + ' volume pushed.')
-        const currentVolume = await mopidy.mixer.getVolume({})
-        let targetVolume 
-        if (direction === 'increase') {
-            targetVolume = Math.min(currentVolume + settings.volumeSteps, settings.maxVolume)
-        } else {
-            targetVolume = Math.max(currentVolume - settings.volumeSteps, settings.minVolume)
-        }
-        log('debug', 'Setting to ' + targetVolume)
-        mopidy.mixer.setVolume({ volume: targetVolume })
-    } catch (err) {
-        log('error', 'Could not set volume')
-        return
-    }
-}
+// React on gpio button events
+gpioEvents.on('playPause', playback.playPause)
+gpioEvents.on('nextTrack', playback.nextTrack)
+gpioEvents.on('previousTrack', playback.previousTrack)
 
 gpioEvents.on('volumeDown', () => {
-    _changeVolume('decrease')
+    playback.changeVolume('decrease',
+        settings.volumeSteps || 10,
+        settings.minVolume || 0,
+        settings.maxVolume || 100)
 })
 
 gpioEvents.on('volumeUp', () => {
-    _changeVolume('increase')
+    playback.changeVolume('increase',
+    settings.volumeSteps || 10,
+    settings.minVolume || 0,
+    settings.maxVolume || 100)
 })
