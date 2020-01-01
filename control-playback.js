@@ -1,3 +1,4 @@
+const log = require('./log')
 const state = require('./app-state')
 const mopidy = require('./mopidy-connection')
 

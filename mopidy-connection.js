@@ -1,6 +1,6 @@
 const Mopidy = require('mopidy')
 
-
+const log = require('./log')
 const settings = require('./settings.json')
 const state = require('./app-state')
 
