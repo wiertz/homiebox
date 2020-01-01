@@ -1,7 +1,7 @@
 
 // Load global app state and log function
-const state = require('./app-state.js')
 const log = require('./log')
+const state = require('./app-state.js')
 
 // Load settings
 const settings = require('./settings.json')
