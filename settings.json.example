@@ -1,11 +1,13 @@
 {
-    "mopidyWebSocketUrl": "ws://127.0.0.1:6680/mopidy/ws/",
+    "mopidyWebSocketUrl": "ws://192.168.0.200:6680/mopidy/ws/",
     "nfcHidPath": "/dev/hidraw0",
-    "nfcLibrary": "./nfc-library.json",
-    "maxVolume": 100,
-    "minVolume": 0,
-    "startupVolume": 100,
-    "volumeSteps": 10,
+    "nfcMusicLibrary": "./nfc-music-library.json",
+    "volume": {
+        "startup": 30,
+        "min": 10,
+        "max": 100,
+        "steps": 10
+    },
     "gpio": {
         "17": "previousTrack",
         "9": "nextTrack",
@@ -13,5 +15,9 @@
         "22": "volumeUp",
         "27": "volumeDown"
     },
-    "log": ["debug", "info", "error"]
+    "log": {
+        "debug": true,
+        "info": true,
+        "error": true
+    }
 }

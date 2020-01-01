@@ -19,7 +19,7 @@ mopidy.on('state:online', async () => {
     mopidy.library.refresh({ "uri": null })
 
     // Set volume
-    mopidy.mixer.setVolume({ volume: (settings.startupVolume || 50) })
+    mopidy.mixer.setVolume({ volume: (settings.volume.startup || 50) })
 
     // Log list of current directories (info/debugging)
     const dirs = await mopidy.library.browse({ uri: 'local:directory' })
