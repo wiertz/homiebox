@@ -12,7 +12,7 @@ const mopidy = new Mopidy({
 })
 
 mopidy.on('state:online', async () => {
-    log('info', 'Connected to mopidy')
+    //log('info', 'Connected to mopidy')
     state.connected = true
 
     // Refresh library once on startup
