@@ -6,7 +6,7 @@
         "startup": 30,
         "min": 10,
         "max": 100,
-        "steps": 10
+        "step": 10
     },
     "gpio": {
         "17": "previousTrack",

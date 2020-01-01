@@ -72,7 +72,7 @@ exports.previousTrack = async () => {
     mopidy.playback.previous()
 }
 
-exports.changeVolume = async function (direction, amount, minVolume, maxVolume) {
+exports.changeVolume = async function (direction, step, minVolume, maxVolume) {
     if(state.lock) {
         return
     }
@@ -81,9 +81,9 @@ exports.changeVolume = async function (direction, amount, minVolume, maxVolume) 
         const currentVolume = await mopidy.mixer.getVolume({})
         let targetVolume 
         if (direction === 'increase') {
-            targetVolume = Math.min(currentVolume + amount, maxVolume)
+            targetVolume = Math.min(currentVolume + step, maxVolume)
         } else {
-            targetVolume = Math.max(currentVolume - amount, minVolume)
+            targetVolume = Math.max(currentVolume - step, minVolume)
         }
         log('debug', 'Setting to ' + targetVolume)
         mopidy.mixer.setVolume({ volume: targetVolume })

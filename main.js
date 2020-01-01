@@ -42,14 +42,14 @@ gpioEvents.on('previousTrack', playback.previousTrack)
 
 gpioEvents.on('volumeDown', () => {
     playback.changeVolume('decrease',
-        settings.volume.steps || 10,
+        settings.volume.step || 10,
         settings.volume.min || 0,
         settings.volume.max || 100)
 })
 
 gpioEvents.on('volumeUp', () => {
     playback.changeVolume('increase',
-    settings.volume.steps || 10,
+    settings.volume.step || 10,
     settings.volume.min || 0,
     settings.volume.max || 100)
 })
