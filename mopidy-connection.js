@@ -33,7 +33,6 @@ mopidy.on('state:offline', async () => {
 })
 
 mopidy.connect()
-console.log(err.code)
 
 
 module.exports = mopidy
