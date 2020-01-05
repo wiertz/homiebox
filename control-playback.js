@@ -73,7 +73,7 @@ exports.previousTrack = async () => {
 }
 
 exports.changeVolume = async function (direction, step, minVolume, maxVolume) {
-    if(state.lock) {
+    if(state.lock || !state.connected) {
         return
     }
     try {
@@ -83,7 +83,8 @@ exports.changeVolume = async function (direction, step, minVolume, maxVolume) {
         log('debug', 'step: ' + step)
         let targetVolume 
         if (direction === 'increase') {
-            targetVolume = Math.min(currentVolume + step, maxVolume)
+            // the api setter and getter behave inconsistently, at least for the alsamixerhence 
+            targetVolume = Math.min(currentVolume + step + 1, maxVolume)
         } else {
             targetVolume = Math.max(currentVolume - step, minVolume)
         }
