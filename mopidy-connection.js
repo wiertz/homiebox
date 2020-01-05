@@ -32,6 +32,11 @@ mopidy.on('state:offline', async () => {
     log('info', 'Lost connection to mopidy')
 })
 
-mopidy.connect()
+try {
+    mopidy.connect()
+} catch(err) {
+    console.log(err.code)
+}
+
 
 module.exports = mopidy
