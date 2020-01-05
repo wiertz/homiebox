@@ -6,16 +6,11 @@ const state = require('./app-state')
 
 
 // Connect to mopidy server
-let mopidy
-try {
-    mopidy = new Mopidy({
+const mopidy = new Mopidy({
         webSocketUrl: settings.mopidyWebSocketUrl,
         callingConvention: "by-position-or-by-name",
         autoConnect: false
-    })
-} catch (err) {
-    console.log(err.code)
-}
+})
 
 mopidy.on('state:online', async () => {
     //log('info', 'Connected to mopidy')
@@ -37,11 +32,8 @@ mopidy.on('state:offline', async () => {
     log('info', 'Lost connection to mopidy')
 })
 
-try {
-    mopidy.connect()
-} catch (err) {
-    console.log(err.code)
-}
+mopidy.connect()
+console.log(err.code)
 
 
 module.exports = mopidy
