@@ -34,6 +34,7 @@ Object.keys(gpioActionsMap).forEach(gpioNumber => {
 
             // Do not emit event if 'hold' event was emitted
             if (ignoreRelease) {
+                ignoreRelease = false
                 return
             }
 
