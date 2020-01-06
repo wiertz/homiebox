@@ -23,8 +23,8 @@ mopidy.on('state:online', async () => {
     mopidy.mixer.setVolume({ volume: (settings.volume.startup || 50) })
 
     // Log list of current directories (info/debugging)
-    const dirs = await mopidy.library.browse({ uri: null })
-    
+    const dirs = await mopidy.library.browse({ uri: "file:///music" })
+
     log('debug', dirs)
 })
 
