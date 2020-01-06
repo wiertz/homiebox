@@ -24,6 +24,7 @@ mopidy.on('state:online', async () => {
 
     // Log list of current directories (info/debugging)
     const dirs = await mopidy.library.browse({ uri: null })
+    
     log('debug', dirs)
 })
 
