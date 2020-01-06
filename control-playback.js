@@ -16,7 +16,7 @@ exports.playDirectory = async (path) => {
         return
     }
     // Create folder uri in modidy format
-    const playDirectory = 'local:directory:' + encodeURI(path)
+    const playDirectory = 'file:///music/' + encodeURI(path)
     log('debug', playDirectory)
 
     // Get uris for all tracks in the folder
