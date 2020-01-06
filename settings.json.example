@@ -9,11 +9,11 @@
         "step": 10
     },
     "gpio": {
-        "17": "previousTrack",
-        "9": "nextTrack",
-        "10": "playPause",
-        "22": "volumeUp",
-        "27": "volumeDown"
+        "17": { push: "previousTrack" },
+        "9": { push: "nextTrack" },
+        "10": { push: "playPause" },
+        "22": { push: "volumeUp" },
+        "27": { push: "volumeDown", hold: "playPause" }
     },
     "log": {
         "debug": true,
