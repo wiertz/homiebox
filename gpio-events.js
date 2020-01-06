@@ -15,11 +15,11 @@ Object.keys(gpioActionsMap).forEach(gpioNumber => {
     const button = new Gpio(gpioNumber, 'in', 'both', { debounceTimeout: 10 })
     button.watch((error, value) => {
         if (value === 1) {
-            // Emit gpio '_hold' event if button is pressed for 10 seconds
-            if(gpioActionsMap[gpioNumber + '_hold']) {
+
+            // Emit button 'hold' event if pressed for 10 seconds
+            if(gpioActionsMap[gpioNumber].hold) {
                 timer = setTimeout(() => {
-                    log('debug', gpioNumber + ' pressed for more than 10 seconds.')
-                    gpioEvent.emit(gpioActionsMap[gpioNumber + '_hold'])
+                    gpioEvent.emit(gpioActionsMap[gpioNumber].hold)
                     ignoreRelease = true
                 }, 10000)
             }
@@ -32,11 +32,15 @@ Object.keys(gpioActionsMap).forEach(gpioNumber => {
                 clearTimeout(timer)
             }
 
-            // Do not emit event if '_hold' event was emitted
+            // Do not emit event if 'hold' event was emitted
             if (ignoreRelease) {
                 return
             }
-            gpioEvent.emit(gpioActionsMap[gpioNumber])
+
+            // Emit 'push' event for button
+            if(gpioActionsMap[gpioNumber].push) {
+                gpioEvent.emit(gpioActionsMap[gpioNumber].push)
+            }
         }
     })
 })
