@@ -1,7 +1,8 @@
 const state = {
     connected: false,
     activeNfc: null,
-    lock: false
+    lock: false,
+    sleepTimerActive: false
 }
 
 module.exports = state
