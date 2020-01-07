@@ -1,6 +1,6 @@
 const state = require('./app-state')
 const log = require('./log')
-const playback = require('./control-playback')
+const playback = require('./control')
 
 module.exports = {
     '0007935219': function() {
