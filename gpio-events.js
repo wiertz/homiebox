@@ -7,33 +7,37 @@ const gpioActionsMap = require('./settings.json').gpio
 
 const gpioEvent = new events.EventEmitter()
 let timer
-let ignoreRelease = false
 
 Object.keys(gpioActionsMap).forEach(gpioNumber => {
+    let ignoreNext = false
     const button = new Gpio(gpioNumber, 'in', 'both', { debounceTimeout: 10 })
     button.watch((error, value) => {
+
+        // Ignore event immediately after 'hold' event was emitted
+        if (ignoreNext) {
+            ignoreNext = false
+            return
+        }
+
         if (value === 1) {
-            // Emit button 'hold' event if pressed for 10 seconds
-            if(gpioActionsMap[gpioNumber].hold) {
+            // Emit button 'hold' event if pressed for 5 seconds
+            if (gpioActionsMap[gpioNumber].hold) {
                 timer = setTimeout(() => {
                     gpioEvent.emit(gpioActionsMap[gpioNumber].hold)
-                    ignoreRelease = true
+                    ignoreNext = true
                 }, 5000)
             }
             return
         }
+
         if (value === 0) {
             // Reset timer on release
             if (timer) {
                 clearTimeout(timer)
             }
-            // Do not emit event if 'hold' event was emitted
-            if (ignoreRelease) {
-                ignoreRelease = false
-                return
-            }
+
             // Emit 'push' event for button
-            if(gpioActionsMap[gpioNumber].push) {
+            if (gpioActionsMap[gpioNumber].push) {
                 gpioEvent.emit(gpioActionsMap[gpioNumber].push)
             }
         }

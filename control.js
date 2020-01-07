@@ -18,6 +18,9 @@ exports.playDirectory = async (path) => {
     if (state.lock || !state.connected) {
         return
     }
+    
+    _stopSleepTimer()
+    
     // Create folder uri in modidy format
     const playDirectory = 'file:///music/' + encodeURI(path)
     log('debug', playDirectory)
@@ -40,6 +43,9 @@ exports.playPause = async () => {
     if (state.lock || !state.connected) {
         return
     }
+
+    _stopSleepTimer()
+
     // Start playback or pause if playing or resume if paused
     const mpdState = await mopidy.playback.getState()
     if (mpdState === 'playing') {
@@ -118,11 +124,9 @@ exports.sleepTimer = async function (duration) {
         startVolume = await mopidy.mixer.getVolume({})
         // At each time interval (in ms), volume will be reduced by 1
         timeInterval = Math.round(duration * 60000 / startVolume)
-        let counter = 0
         state.sleepTimer = setInterval(async () => {
-            counter += 1
-            newVolume = startVolume - counter * 1
-            log('debug', 'Sleep timer: reducing volume to ' + newVolume)
+            const currentVolume = await mopidy.mixer.getVolume({})
+            const newVolume = currentVolume - 1
             mopidy.mixer.setVolume({ volume: newVolume })
             if(newVolume === 0) {
                 await mopidy.playback.stop()
