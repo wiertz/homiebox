@@ -97,8 +97,9 @@ exports.sleepTimer = async function (duration) {
     try {
         // If sleep timer is active, stop
         if (state.sleepTimer) {
-            log('info', 'Sleep timer stopped.')
             clearInterval(state.sleepTimer)
+            state.sleepTimer = null
+            log('info', 'Sleep timer stopped.')
             return
         }
         log('info', 'Sleep timer ' + duration + ' minutes.')
@@ -115,6 +116,7 @@ exports.sleepTimer = async function (duration) {
                 log('debug', 'Sleep timer finished.')
                 mopidy.playback.stop()
                 clearInterval(state.sleepTimer)
+                state.sleepTimer = null
                 log('debug', 'Sleep timer status: ' + state.sleepTimer)
             }
         }, timeInterval)
@@ -122,7 +124,9 @@ exports.sleepTimer = async function (duration) {
         log('error', err)
         if(state.sleepTimer) {
             clearInterval(state.sleepTimer)
+            state.sleepTimer = null
         }
+        return
     }
 }
 
