@@ -97,9 +97,11 @@ exports.sleepTimer = async function (duration) {
     try {
         // If sleep timer is active, stop
         if (state.sleepTimer) {
+            log('info', 'Sleep timer stopped.')
             clearInterval(state.sleepTimer)
             return
         }
+        log('info', 'Sleep timer ' + duration + ' minutes.')
         startVolume = await mopidy.mixer.getVolume({})
         // At each time interval (in ms), volume will be reduced by 1
         timeInterval = Math.round(duration * 60000 / startVolume)
@@ -107,10 +109,13 @@ exports.sleepTimer = async function (duration) {
         state.sleepTimer = setInterval(() => {
             counter += 1
             newVolume = startVolume - counter * 1
+            log('debug', 'Sleep timer: reducing volume to ' + newVolume)
             mopidy.mixer.setVolume({ volume: newVolume })
             if(newVolume === 0) {
+                log('debug', 'Sleep timer finished.')
                 mopidy.playback.stop()
                 clearInterval(state.sleepTimer)
+                log('debug', 'Sleep timer status: ' + state.sleepTimer)
             }
         }, timeInterval)
     } catch (err) {
