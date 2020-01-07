@@ -93,39 +93,47 @@ exports.changeVolume = async function (direction, step, minVolume, maxVolume) {
     }
 }
 
+const _stopSleepTimer = async function() {
+    if (state.sleepTimer) {
+        clearInterval(state.sleepTimer)
+        state.sleepTimer = null
+        log('info', 'Sleep timer stopped.')
+        return
+    }
+}
+
 exports.sleepTimer = async function (duration) {
     try {
-        // If sleep timer is active, stop
-        if (state.sleepTimer) {
-            clearInterval(state.sleepTimer)
-            state.sleepTimer = null
-            log('info', 'Sleep timer stopped.')
+        if (state.lock) {
             return
         }
+
+        // If sleep timer is active, stop
+        if (state.sleepTimer) {
+            _stopSleepTimer()
+            return
+        }
+
         log('info', 'Sleep timer ' + duration + ' minutes.')
         startVolume = await mopidy.mixer.getVolume({})
         // At each time interval (in ms), volume will be reduced by 1
         timeInterval = Math.round(duration * 60000 / startVolume)
         let counter = 0
-        state.sleepTimer = setInterval(() => {
+        state.sleepTimer = setInterval(async () => {
             counter += 1
             newVolume = startVolume - counter * 1
             log('debug', 'Sleep timer: reducing volume to ' + newVolume)
             mopidy.mixer.setVolume({ volume: newVolume })
             if(newVolume === 0) {
-                log('debug', 'Sleep timer finished.')
-                mopidy.playback.stop()
-                clearInterval(state.sleepTimer)
-                state.sleepTimer = null
-                log('debug', 'Sleep timer status: ' + state.sleepTimer)
+                await mopidy.playback.stop()
+                mopidy.mixer.setVolume({ volume: startVolume })
+                _stopSleepTimer()
+                log('info', 'Sleep timer ended.')
             }
         }, timeInterval)
     } catch (err) {
         log('error', err)
-        if(state.sleepTimer) {
-            clearInterval(state.sleepTimer)
-            state.sleepTimer = null
-        }
+        _stopSleepTimer()
         return
     }
 }
