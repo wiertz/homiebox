@@ -93,7 +93,7 @@ exports.changeVolume = async function (direction, step, minVolume, maxVolume) {
     }
 }
 
-exports.startSleepTimer(duration) = async function () {
+exports.startSleepTimer = async function (duration) {
     try {
         // If sleep timer is active, stop
         if (state.sleepTimer) {
